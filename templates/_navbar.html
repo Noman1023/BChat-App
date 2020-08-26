@@ -1,0 +1,17 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-md navbar-light">
+
+  <!-- Breadcrumbs -->
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a class="waves-effect" href="#">Home</a></li>
+    {% if user.is_authenticated %}
+    <li class="breadcrumb-item"><a class="waves-effect" href="{% url 'logout' %}">logout</a></li>
+    {% else %}
+    <li class="breadcrumb-item active"><a class="waves-effect" href="{% url 'login' %}">login</a></li>
+    {% endif %}
+  </ol>
+  <!-- Breadcrumbs -->
+
+
+</nav>
+<!-- Navbar -->
