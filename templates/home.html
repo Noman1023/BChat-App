@@ -17,7 +17,9 @@
             <div class="col-md-8">
             {% include '_navbar.html' %}
             {% if user.is_authenticated %}
+            {% if friends %}
             <a href="{% url 'chat:friends' %}"><button class="btn btn-secondary">Friends</button></a>
+            {% endif %}
             {% endif %}
                 {% block content %}
                 {% endblock %}

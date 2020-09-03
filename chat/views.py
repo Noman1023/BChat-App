@@ -22,10 +22,6 @@ from chat.api.serializers import (FriendRequestSerializer,
                                   FriendListSerializer,)
 
 
-class SocketView(TemplateView):
-    template_name = 'sockets.html'
-
-
 class FriendRequestAcceptAPIView(CreateAPIView):
     serializer_class = FriendRequestSerializer
     queryset = User.objects.all()
@@ -36,23 +32,32 @@ class FriendListView(ListView):
 
     def get_queryset(self):
         return self.request.user.friends.all()
+        print(self.request.user.friends.all())
+        print(self.friends.all())
 
 
 class HomeView(TemplateView):
     template_name = 'home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(HomeView, self).get_context_data(**kwargs)
+        friends = self.request.user.friends.all()
+        context['friends'] = friends
+        return context
 
 
 class InboxView(View):
     def get(self, request, *args, **kwargs):
         username = self.kwargs.get('user')
         obj = User.objects.get(username=username)
-        name = request.user.username
-        thread_obj = Thread.objects.get_thread(name, username)
+        user = request.user
+        my_name = user.username
+        thread_obj = Thread.objects.get_thread(my_name, username)
         messages = Message.objects.filter(thread=thread_obj)
         lm = {}
-        friends = self.request.user.friends.all()
+        friends = user.friends.all()
         for friend in friends:
-            t_o = Thread.objects.get_thread(name, friend)
+            t_o = Thread.objects.get_thread(my_name, friend)
             lm[friend] = Message.objects.filter(thread=t_o).last() or ''
 
         context = {

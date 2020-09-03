@@ -852,89 +852,100 @@ Codepen: https://codepen.io/emilcarlsson/
 Website: http://emilcarlsson.se/
 
 -->
-<div id="frame">
-    <div id="sidepanel">
-        <div id="profile">
-            <div class="wrap">
-                <img id="profile-img" src="{{ user.image.url }}" height="40px" alt=""/>
-                <p>{{ user.username }}</p>
+{% if friends %}
+    <div id="frame">
+        <div id="sidepanel">
+            <div id="profile">
+                <div class="wrap">
+                    <img id="profile-img" src="{{ user.image.url }}" height="40px" alt=""/>
+                    <p>{{ user.username }}</p>
+                </div>
             </div>
-        </div>
-        <div id="search">
-            <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
-            <input type="text" placeholder="Search contacts..."/>
-        </div>
-        <div id="contacts">
-            <ul>
-                    {% for friend in friends %}
-                    {% if last_messages|get_value_from_dict:friend != '' %}
-                        {% if friend.is_online %}
-                            {% if friend.username == obj.username %}
-                                <li class="contact active">
-                            {% else %}
-                                 <li class="contact">
-                            {% endif %}
-                            <a href="{% url 'chat:chat' friend %}" style="color: white">
-                                <div class="wrap">
-                                    <span class="contact-status online"></span>
-                                    <img src="{{ friend.image.url }}" height="40px" alt=""/>
-                                    <div class="meta">
-                                        <p class="name">{{ friend.username }}</p>
-                                        <p class="preview">{{ last_messages|get_value_from_dict:friend }}.</p>
-                                    </div>
-                                </div>
-                            </a>
-                            </li>
-                        {% else %}
-                            <li class="contact">
-                               <a href="{% url 'chat:chat' friend %}" style="color: white">
-                                    <div class="wrap">
-                                        <span class="contact-status offline"></span>
-                                        <img src="{{ friend.image.url }}" height="40px" alt=""/>
-                                        <div class="meta">
-                                            <p class="name">{{ friend.username }}</p>
-                                            <p class="preview">{{ last_messages|get_value_from_dict:friend }}.</p>
+            <div id="search">
+                <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
+                <input type="text" placeholder="Search contacts..."/>
+            </div>
+            <div id="contacts">
+                <ul>
+                        
+                            {% for friend in friends %}
+                            {% if last_messages|get_value_from_dict:friend != '' %}
+                                {% if friend.is_online %}
+                                    {% if friend.username == obj.username %}
+                                        <li class="contact active">
+                                    {% else %}
+                                         <li class="contact">
+                                    {% endif %}
+                                    <a href="{% url 'chat:chat' friend %}" style="color: white">
+                                        <div class="wrap">
+                                            <span class="contact-status online"></span>
+                                            <img src="{{ friend.image.url }}" height="40px" alt=""/>
+                                            <div class="meta">
+                                                <p class="name">{{ friend.username }}</p>
+                                                <p class="preview">{{ last_messages|get_value_from_dict:friend }}.</p>
+                                            </div>
                                         </div>
-                                    </div>
-                               </a>
-                            </li>
-                        {% endif %}
+                                    </a>
+                                    </li>
+                                {% else %}
+                                    <li class="contact">
+                                       <a href="{% url 'chat:chat' friend %}" style="color: white">
+                                            <div class="wrap">
+                                                <span class="contact-status offline"></span>
+                                                <img src="{{ friend.image.url }}" height="40px" alt=""/>
+                                                <div class="meta">
+                                                    <p class="name">{{ friend.username }}</p>
+                                                    <p class="preview">{{ last_messages|get_value_from_dict:friend }}.</p>
+                                                </div>
+                                            </div>
+                                       </a>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="content">
+            <div class="contact-profile">
+                <img src="{{ MEDIA_URL }}{{ obj.image.url }}" alt=""/>
+                <p>{{ obj.username }}</p>
+            </div>
+            <div class="messages">
+                <ul>
+                {% for message in messages %}
+                    {% if message.sender == obj.username %}
+                        <li class="replies">
+                            <img src={{ obj.image.url }} alt=""/>
+                            <p>{{ message }}</p>
+                        </li>
+                    {% else %}
+                        <li class="sent">
+                            <img src={{ user.image.url }} alt=""/>
+                            <p id="chat-sent">{{ message }}</p>
                     {% endif %}
-                    {% endfor %}
-            </ul>
-        </div>
-    </div>
-    <div class="content">
-        <div class="contact-profile">
-            <img src="{{ MEDIA_URL }}{{ obj.image.url }}" alt=""/>
-            <p>{{ obj.username }}</p>
-        </div>
-        <div class="messages">
-            <ul>
-            {% for message in messages %}
-                {% if message.sender == obj.username %}
-                    <li class="replies">
-                        <img src={{ obj.image.url }} alt=""/>
-                        <p>{{ message }}</p>
-                    </li>
-                {% else %}
-                    <li class="sent">
-                        <img src={{ user.image.url }} alt=""/>
-                        <p id="chat-sent">{{ message }}</p>
-                {% endif %}
-            {% endfor %}
-            </ul>
-        </div>
-        <div class="message-input">
-            <div class="wrap">
-                <input id="chat-message-input" type="text" placeholder="Write your message..."/>
-                <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
-                <button id="chat-message-submit" class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>
-                </button>
+                {% endfor %}
+                </ul>
+            </div>
+            <div class="message-input">
+                <div class="wrap">
+                    <input id="chat-message-input" type="text" placeholder="Write your message..."/>
+                    <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+                    <button id="chat-message-submit" class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+{% else %}
+    <div class="row">
+        <div class="col">
+            <p>
+                You don't have any friends
+            </p>
+        </div>
+    </div>
+{% endif %}
 
 {{ username|json_script:"user-name" }}
 {{ user.username|json_script:"user" }}
