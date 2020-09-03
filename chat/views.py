@@ -49,24 +49,34 @@ class HomeView(TemplateView):
 class InboxView(View):
     def get(self, request, *args, **kwargs):
         username = self.kwargs.get('user')
-        obj = User.objects.get(username=username)
-        user = request.user
-        my_name = user.username
-        thread_obj = Thread.objects.get_thread(my_name, username)
-        messages = Message.objects.filter(thread=thread_obj)
-        lm = {}
-        friends = user.friends.all()
-        for friend in friends:
-            t_o = Thread.objects.get_thread(my_name, friend)
-            lm[friend] = Message.objects.filter(thread=t_o).last() or ''
+        obj = None
+        context = None
+        try:
+            obj = User.objects.get(username=username)
+        except:
+            pass
+        if obj:
+            user = request.user
+            my_name = user.username
+            thread_obj = Thread.objects.get_thread(my_name, username)
+            messages = Message.objects.filter(thread=thread_obj)
+            lm = {}
+            friends = user.friends.all()
+            for friend in friends:
+                t_o = Thread.objects.get_thread(my_name, friend)
+                lm[friend] = Message.objects.filter(thread=t_o).last() or ''
 
-        context = {
-            'obj': obj,
-            'username': username,
-            'messages': messages,
-            'friends': friends,
-            'last_messages': lm
-        }
+            context = {
+                'obj': obj,
+                'username': username,
+                'messages': messages,
+                'friends': friends,
+                'last_messages': lm
+            }
+        else:
+            # return httpresponse
+            pass
+
         return render(request, template_name='inbox.html', context=context)
 
 
