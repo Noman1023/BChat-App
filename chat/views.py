@@ -31,9 +31,14 @@ class FriendListView(ListView):
     template_name = 'friend_list.html'
 
     def get_queryset(self):
-        return self.request.user.friends.all()
-        print(self.request.user.friends.all())
-        print(self.friends.all())
+    	user = self.request.user
+    	print(user)
+    	if user.is_authenticated:
+    		return user.friends.all()
+    		print('yes')
+    	else:
+    		print('no')
+    		return None
 
 
 class HomeView(TemplateView):
@@ -41,7 +46,11 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
-        friends = self.request.user.friends.all()
+        user = self.request.user
+        friends = None
+
+        if user.is_authenticated:
+        	friends = user.friends.all()
         context['friends'] = friends
         return context
 
