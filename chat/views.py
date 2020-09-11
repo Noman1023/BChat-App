@@ -31,14 +31,11 @@ class FriendListView(ListView):
     template_name = 'friend_list.html'
 
     def get_queryset(self):
-    	user = self.request.user
-    	print(user)
-    	if user.is_authenticated:
-    		return user.friends.all()
-    		print('yes')
-    	else:
-    		print('no')
-    		return None
+        user = self.request.user
+        if user.is_authenticated:
+            return user.friends.all()
+        else:
+            return None
 
 
 class HomeView(TemplateView):
@@ -50,7 +47,7 @@ class HomeView(TemplateView):
         friends = None
 
         if user.is_authenticated:
-        	friends = user.friends.all()
+            friends = user.friends.all()
         context['friends'] = friends
         return context
 
@@ -73,8 +70,9 @@ class InboxView(View):
             friends = user.friends.all()
             for friend in friends:
                 t_o = Thread.objects.get_thread(my_name, friend)
-                lm[friend] = Message.objects.filter(thread=t_o).last() or ''
+                lm[friend] = Message.objects.filter(thread=t_o).last() or 'na'
 
+            print(lm)
             context = {
                 'obj': obj,
                 'username': username,

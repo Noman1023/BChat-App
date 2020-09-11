@@ -28,19 +28,29 @@ class ChatConsumer(AsyncConsumer):
         thread_obj = await self.get_thread(self.user, self.other_username)
         self.chat_thread = thread_obj
         self.room_group_name = thread_obj.room_group_name  # group
-
+        data = {
+            'message': 'connected',
+            'user': self.user.username
+        }
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
         )
+
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'chat_message',
+                'message': json.dumps(data)
+            }
+        )
         self.rando_user = await self.get_name()
-
-
         await self.create_channel()
         await self.set_online_status(self.user, True)
 
     async def websocket_receive(self, event):  # websocket.receive
         message_data = json.loads(event['text'])
+        print(message_data)
         message = message_data['message']
         # user = await self.get_user(self.other_username)
         await self.create_message(self.chat_thread, self.user, message)
@@ -62,6 +72,17 @@ class ChatConsumer(AsyncConsumer):
     async def websocket_disconnect(self, event):
         await self.delete_channel()
         await self.set_online_status(self.user, False)
+        data = {
+            'message': 'disconnected',
+            'user': self.user.username
+        }
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'chat_message',
+                'message': json.dumps(data)
+            }
+        )
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name

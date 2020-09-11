@@ -869,47 +869,36 @@ Website: http://emilcarlsson.se/
                 <ul>
                         
                             {% for friend in friends %}
-                            {% if last_messages|get_value_from_dict:friend != '' %}
-                                {% if friend.is_online %}
-                                    {% if friend.username == obj.username %}
-                                        <li class="contact active">
-                                    {% else %}
-                                         <li class="contact">
-                                    {% endif %}
-                                    <a href="{% url 'chat:chat' friend %}" style="color: white">
-                                        <div class="wrap">
-                                            <span class="contact-status online"></span>
-                                            <img src="{{ friend.image.url }}" height="40px" alt=""/>
-                                            <div class="meta">
-                                                <p class="name">{{ friend.username }}</p>
-                                                <p class="preview">{{ last_messages|get_value_from_dict:friend }}.</p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    </li>
-                                {% else %}
-                                    <li class="contact">
-                                       <a href="{% url 'chat:chat' friend %}" style="color: white">
+                                {% if last_messages|get_value_from_dict:friend != 'na'%}
+
+                                        {% if friend.username == obj.username %}
+                                            <li class="contact active">
+                                        {% else %}
+                                             <li class="contact">
+                                        {% endif %}
+                                        <a href="{% url 'chat:chat' friend %}" style="color: white">
                                             <div class="wrap">
-                                                <span class="contact-status offline"></span>
+                                                <span class="contact-status online"></span>
                                                 <img src="{{ friend.image.url }}" height="40px" alt=""/>
                                                 <div class="meta">
                                                     <p class="name">{{ friend.username }}</p>
                                                     <p class="preview">{{ last_messages|get_value_from_dict:friend }}.</p>
                                                 </div>
                                             </div>
-                                       </a>
-                                    </li>
+                                        </a>
+                                        </li>
                                 {% endif %}
-                            {% endif %}
                             {% endfor %}
                 </ul>
             </div>
         </div>
         <div class="content">
             <div class="contact-profile">
-                <img src="{{ MEDIA_URL }}{{ obj.image.url }}" alt=""/>
-                <p>{{ obj.username }}</p>
+                <div>
+                    <img src="{{ MEDIA_URL }}{{ obj.image.url }}" alt=""/>
+                    <p>{{ obj.username }}</p>
+                </div>
+
             </div>
             <div class="messages">
                 <ul>
@@ -952,45 +941,67 @@ Website: http://emilcarlsson.se/
 
 <script src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script>
 <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
-<script >$(".messages").animate({ scrollTop: $(document).height() }, "fast");
-
+<script >
+$(".messages").animate({ scrollTop: $(document).height() }, "fast");
 
 protocol = window.location.protocol;
 let domain_start = '';
-const userName = JSON.parse(document.getElementById('user-name').textContent)
+const userName = JSON.parse(document.getElementById('user-name').textContent);
 if (protocol === 'http:') {
-    domain_start = 'ws://'
+    domain_start = 'ws://';
 } else if (protocol === 'https:') {
-    domain_start = 'wss://'
+    domain_start = 'wss://';
 }
 full_domain = domain_start + window.location.host + '/ws/chat/inbox/' + userName + '/';
 const chatSocket = new WebSocket(full_domain);
 
 
 chatSocket.onmessage = function (e) {
+    const me = JSON.parse(document.getElementById('user').textContent);
+    const username = JSON.parse(document.getElementById('user-name').textContent);
 
 
-    const me = JSON.parse(document.getElementById('user').textContent)
-    const message = JSON.parse(e.data);
-    if ($.trim(message) === '') {
+    const data = JSON.parse(e.data);
+
+    if(data.message === 'connected'){
+        if(data.user === username){
+            console.log(username, ' is online')
+        }
+        else{
+            console.log('Welcome')
+        }
+    }
+    else if(data.message === 'disconnected'){
+        if(data.user === username){
+            console.log( username, ' is offline')
+        }
+
+    }
+    else{
+        if ($.trim(data) === '') {
         return false;
     }
-    m = message.message;
-    if (message.user === me){
+    m = data.message;
+    if (data.user === me){
          $('<li class="sent"><img src="{{ user.image.url }}" alt="" /><p>' + m + '</p></li>').appendTo($('.messages ul'));
     }
     else{
-         $('<li class="replies"><img src="{{ obj.image.url }}" alt="" /><p>' + m + '</p></li>').appendTo($('.messages ul'));
+        $('<li class="replies"><img src="{{ obj.image.url }}" alt="" /><p>' + m + '</p></li>').appendTo($('.messages ul'));
     }
+
     $('.message-input input').val(null);
     $('.contact.active .preview').html('<span>You: </span>' + m);
     $(".messages").animate({scrollTop: $(document).height()}, "fast");
+    $(".meta p").last().text(m);
 
-};
+}
+
+    };
 
 
 chatSocket.onclose = function (e) {
         console.error('Chat socket closed unexpectedly');
+
 };
 
 function sendMessage(){
