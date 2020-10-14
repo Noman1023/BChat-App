@@ -143,7 +143,7 @@ class LeadData(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.CharField(max_length=50)
-    phone_no = models.IntegerField()
+    phone_no = models.IntegerField(blank=True, null=True)
 
 # @receiver(post_save, sender=User)
 # def set_image(sender, instance, created, **kwargs):
