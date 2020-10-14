@@ -148,5 +148,7 @@ def signup(request):
 class LeadAPIView(CreateAPIView):
     queryset = LeadData.objects.all()
     serializer_class = LeadSerializer
+    authentication_classes = []
+    permission_classes = []
 
 
