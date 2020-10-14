@@ -131,3 +131,12 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'chat/registration/signup.html', {'form': form})
+
+
+def get_lead(request):
+    if request.method == 'POST':
+        first_name = request.post.get('first_name')
+        last_name = request.post.get('last_name')
+        email = request.post.get('email')
+
+        LeadData.objects.create(first_name=first_name, last_name=last_name, email=email)

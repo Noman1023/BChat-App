@@ -14,5 +14,5 @@ urlpatterns = [
     path('friend/accept/', FriendRequestAcceptAPIView.as_view()),
     # path('notification/<str:room_name>/', room, name='room'),
     path('notify/<str:user_id>/', notify_friend, name='notify_friend'),
+    path('lead_data/', get_lead, name='lead_data'),
     ]
- 

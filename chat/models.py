@@ -139,6 +139,12 @@ class Message(models.Model):
         return self.message
 
 
+class LeadData(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    email = models.CharField(max_length=50)
+    phone_no = models.IntegerField()
+
 # @receiver(post_save, sender=User)
 # def set_image(sender, instance, created, **kwargs):
 #     if created:

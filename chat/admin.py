@@ -32,8 +32,10 @@ class UserAdmin(admin.ModelAdmin):
     # ordering = ('user_id',)
     #
 
+
 admin.site.register(User, UserAdmin)
 admin.site.register(Notification)
 admin.site.register(Channel)
 admin.site.register(Thread)
 admin.site.register(Message)
+admin.site.register(LeadData)
