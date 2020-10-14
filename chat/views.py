@@ -1,6 +1,7 @@
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 from asgiref.sync import async_to_sync, sync_to_async
@@ -20,6 +21,7 @@ from rest_framework.generics import ListCreateAPIView, ListAPIView, CreateAPIVie
 
 from chat.api.serializers import (FriendRequestSerializer,
                                   FriendListSerializer,)
+from .serializers import LeadSerializer
 
 
 class FriendRequestAcceptAPIView(CreateAPIView):
@@ -133,10 +135,18 @@ def signup(request):
     return render(request, 'chat/registration/signup.html', {'form': form})
 
 
-def get_lead(request):
-    if request.method == 'POST':
-        first_name = request.post.get('first_name')
-        last_name = request.post.get('last_name')
-        email = request.post.get('email')
+# def lead
+#     if request.method == 'POST':
+#         first_name = request.post.get('first_name')
+#         last_name = request.post.get('last_name')
+#         email = request.post.get('email')
+#
+#         LeadData.objects.create(first_name=first_name, last_name=last_name, email=email)
+#         return HttpResponseRedirect('lead_data')
+#
 
-        LeadData.objects.create(first_name=first_name, last_name=last_name, email=email)
+class LeadAPIView(CreateAPIView):
+    queryset = LeadData.objects.all()
+    serializer_class = LeadSerializer
+
+
