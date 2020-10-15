@@ -16,11 +16,14 @@ class ChatConsumer(AsyncConsumer):
         # self.kwargs.get("username")
         self.other_username = self.scope['url_route']['kwargs']['username']
         self.user = self.scope['user']
+
         if self.user.is_authenticated:
+            print('authenticated')
             await self.send({
                 "type": "websocket.accept"
             })
         else:
+            print('unauthenticated')
             await self.send({
                 "type": "websocket.close"
             })
@@ -44,7 +47,6 @@ class ChatConsumer(AsyncConsumer):
                 'message': json.dumps(data)
             }
         )
-        self.rando_user = await self.get_name()
         await self.create_channel()
         await self.set_online_status(self.user, True)
 
