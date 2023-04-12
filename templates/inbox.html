@@ -862,7 +862,7 @@ Website: http://emilcarlsson.se/
                 </div>
             </div>
             <div id="search">
-                <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
+                <label for="contacts"><i class="fa fa-search" aria-hidden="true"></i></label>
                 <input type="text" placeholder="Search contacts..."/>
             </div>
             <div id="contacts">
@@ -878,7 +878,7 @@ Website: http://emilcarlsson.se/
                                         {% endif %}
                                         <a href="{% url 'chat:chat' friend %}" style="color: white">
                                             <div class="wrap">
-                                                <span class="contact-status online"></span>
+                                                <span class="contact-status"></span>
                                                 <img src="{{ friend.image.url }}" height="40px" alt=""/>
                                                 <div class="meta">
                                                     <p class="name">{{ friend.username }}</p>

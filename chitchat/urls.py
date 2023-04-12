@@ -20,7 +20,6 @@ from django.urls.conf import include
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 from django.contrib.auth.views import LoginView, LogoutView
 
-
 from chat.views import HomeView
 from django.conf import settings
 

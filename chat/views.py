@@ -39,6 +39,11 @@ class FriendListView(ListView):
         else:
             return None
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(FriendListView, self).get_context_data(**kwargs)
+        context['friends'] = self.request.user.friends.all() if self.request.user.is_authenticated else None
+        return context
+
 
 class HomeView(TemplateView):
     template_name = 'home.html'
