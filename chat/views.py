@@ -109,11 +109,6 @@ def notify_friend(request, id):
             "text_data": 'A challenge from %s' % challenger
         })
 
-        # async_to_sync(channel_layer.send)('ch', {
-        #     "type": "notify",
-        #     "text_data": 'A  from %s' % challenger,
-        # })
-
         return Response({'message': "Challenge sent!"}, status=status.HTTP_200_OK)
 
     else:
@@ -138,17 +133,6 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'chat/registration/signup.html', {'form': form})
-
-
-# def lead
-#     if request.method == 'POST':
-#         first_name = request.post.get('first_name')
-#         last_name = request.post.get('last_name')
-#         email = request.post.get('email')
-#
-#         LeadData.objects.create(first_name=first_name, last_name=last_name, email=email)
-#         return HttpResponseRedirect('lead_data')
-#
 
 class LeadAPIView(CreateAPIView):
     queryset = LeadData.objects.all()
